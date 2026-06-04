@@ -1,0 +1,76 @@
+HIGH CPU USAGE (Windows)
+========================
+Symptoms: System slow, Task Manager shows high CPU
+Diagnosis:
+- Open Task Manager > Processes tab, sort by CPU
+- Run `wmic cpu get loadpercentage /value`
+- Check Event Viewer for errors
+- Review Windows Update or background tasks
+
+Fixes:
+1. End high CPU processes in Task Manager
+2. Run Windows Update troubleshooter
+3. Check for malware with Windows Defender
+4. Disable unnecessary startup programs
+5. Update drivers
+
+LOW MEMORY (Windows)
+====================
+Symptoms: Apps crashing, system sluggish, out of memory warnings
+Diagnosis:
+- Task Manager > Performance > Memory
+- `wmic OS get TotalVisibleMemorySize,FreePhysicalMemory /value`
+- Resource Monitor > Memory tab
+
+Fixes:
+1. Close unused applications
+2. Disable startup programs
+3. Increase virtual memory (pagefile)
+4. Restart memory-heavy services
+5. Consider adding RAM
+
+DISK FULL (Windows)
+===================
+Symptoms: Cannot save files, low disk space warning
+Diagnosis:
+- File Explorer > This PC shows drive usage
+- `wmic logicaldisk get size,freespace,caption /value`
+- Check Temp folder: `%TEMP%`
+
+Fixes:
+1. Run Disk Cleanup (cleanmgr)
+2. Delete temp files in `%TEMP%`
+3. Uninstall unused programs
+4. Move large files to external storage
+5. Run Storage Sense settings
+
+NETWORK ISSUES (Windows)
+========================
+Symptoms: No internet, slow speeds, DNS errors
+Diagnosis:
+- `ipconfig /all` check network config
+- `ping 8.8.8.8` test connectivity
+- `nslookup google.com` test DNS
+- Network & Internet Settings > Status
+
+Fixes:
+1. Run Network Troubleshooter
+2. Restart network adapter
+3. Flush DNS: `ipconfig /flushdns`
+4. Reset TCP/IP: `netsh int ip reset`
+5. Restart router/modem
+
+WINDOWS SERVICE FAILURES
+==========================
+Symptoms: Services not starting, dependency errors
+Diagnosis:
+- `sc query type= service start= auto state= running`
+- Event Viewer > Windows Logs > System
+- Services.msc check service status
+
+Fixes:
+1. Restart service: `net start <ServiceName>`
+2. Check dependencies in Services.msc
+3. Run SFC scan: `sfc /scannow`
+4. Check for Windows updates
+5. Review service account permissions

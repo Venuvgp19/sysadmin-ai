@@ -1,0 +1,106 @@
+HIGH CPU USAGE
+==============
+Symptoms: System slow, load average high, processes consuming CPU
+Diagnosis:
+- Run `top` or `htop` to identify processes using most CPU
+- Check `iostat -x 1 5` for I/O wait (wa column)
+- Check `mpstat` for per-core usage
+- Review `journalctl` for errors
+
+Fixes:
+1. Identify and kill runaway process: `kill -9 <PID>`
+2. Check for runaway cron jobs: `grep CRON /var/log/syslog`
+3. Review system limits: `ulimit -a`
+4. Check for crypto miners: Look for unknown processes in /tmp
+
+MEMORY ISSUES
+===============
+Symptoms: OOM killer active, swap full, applications crashing
+Diagnosis:
+- `free -h` shows available memory
+- `vmstat 1 5` shows memory statistics
+- `ps aux --sort=-%mem | head` shows top memory consumers
+- Check for memory leaks in applications
+
+Fixes:
+1. Clear caches: `sync && echo 3 > /proc/sys/vm/drop_caches`
+2. Find large files: `du -sh /tmp/* /var/tmp/* 2>/dev/null`
+3. Check swap usage: `swapon -s`
+4. Restart memory-heavy services
+
+DISK FULL
+=========
+Symptoms: Cannot write files, "No space left on device"
+Diagnosis:
+- `df -h` shows disk usage per filesystem
+- `du -sh /*` finds large directories
+- `du -sh /var/log` check log sizes
+- `lsof +L1` find deleted but open files
+
+Fixes:
+1. Clean logs: `journalctl --vacuum-size=100M`
+2. Remove old packages: `apt autoremove && apt autoclean`
+3. Find large files: `find / -type f -size +100M 2>/dev/null`
+4. Clear temp: `rm -rf /tmp/*`
+
+SSH CONNECTION REFUSED
+======================
+Symptoms: Cannot SSH to server
+Diagnosis:
+- `systemctl status sshd` check if SSH service running
+- `ss -tlnp | grep 22` check if port 22 listening
+- `iptables -L` check firewall rules
+- `cat /var/log/auth.log` check authentication logs
+
+Fixes:
+1. Start SSH: `systemctl start sshd`
+2. Enable SSH: `systemctl enable sshd`
+3. Check firewall: `ufw allow ssh` or `iptables -A INPUT -p tcp --dport 22 -j ACCEPT`
+4. Check SELinux: `setsebool -P ssh_chroot_rw_homedirs on`
+
+NETWORK CONNECTIVITY
+====================
+Symptoms: Cannot reach external hosts, intermittent connections
+Diagnosis:
+- `ping 8.8.8.8` test basic connectivity
+- `ip addr` check network interface status
+- `ip route` check routing table
+- `cat /etc/resolv.conf` check DNS
+- `ss -tlnp` check listening ports
+
+Fixes:
+1. Restart network: `systemctl restart networking` or `systemctl restart NetworkManager`
+2. Check DNS: Add `nameserver 8.8.8.8` to /etc/resolv.conf
+3. Check cables/ports: `ethtool eth0`
+4. Check routing: `ip route add default via <gateway>`
+
+WEB SERVER 502 BAD GATEWAY
+==========================
+Symptoms: Website returning 502 errors
+Diagnosis:
+- `systemctl status nginx` or `systemctl status apache2`
+- Check backend service (PHP-FPM, Gunicorn, etc.)
+- Check error logs: `tail -f /var/log/nginx/error.log`
+- Test backend directly: `curl localhost:8080`
+- Check resource usage: `free -h` and `df -h`
+
+Fixes:
+1. Restart web server: `systemctl restart nginx`
+2. Restart backend: `systemctl restart php8.1-fpm`
+3. Check upstream config in nginx sites-available
+4. Verify backend is listening on expected port
+
+MYSQL / POSTGRES DOWN
+=====================
+Symptoms: Database connection errors
+Diagnosis:
+- `systemctl status mysql` or `systemctl status postgresql`
+- Check error logs in /var/log/mysql/ or /var/log/postgresql/
+- Test: `mysqladmin ping` or `pg_isready`
+- Check disk space: `df -h`
+
+Fixes:
+1. Start service: `systemctl start mysql`
+2. Check config syntax: `mysqld --validate-config`
+3. Repair tables if crashed
+4. Increase max_connections if needed
