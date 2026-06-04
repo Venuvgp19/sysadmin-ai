@@ -227,8 +227,8 @@ Example interaction:
 
 1. Large directories to investigate:
    - C:\Windows\Temp\ (1.2GB)
-   - C:\Users\praneeth\.openclaw\ (4.1GB)
-   - C:\Users\praneeth\AppData\Local\ (12GB)
+   - C:\Users\venu\.openclaw\ (4.1GB)
+   - C:\Users\venu\AppData\Local\ (12GB)
 
 2. Safe cleanup actions:
    - Run Disk Cleanup (cleanmgr)
